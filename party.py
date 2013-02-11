@@ -17,3 +17,6 @@ class Party:
     __name__ = 'party.party'
 
     auto_update_avatax = fields.Boolean('Auto Update Avatax')
+    customer_usage_type = fields.Many2One(
+        'avatax.customer_usage_type', 'Customer Usage Type'
+    )

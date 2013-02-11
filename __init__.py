@@ -9,6 +9,7 @@ from trytond.pool import Pool
 from .party import *
 from .company import *
 from .product import *
+from .avatax import *
 
 
 def register():
@@ -16,4 +17,5 @@ def register():
         Party,
         Company,
         Product,
+        CustomerUsageType,
         module='avatax_calc', type_='model')

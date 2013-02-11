@@ -2,6 +2,8 @@
 <data>
     <xpath expr="/form/notebook/page[@id='accounting']" position="after">
         <page string="Avatax Configuration" id="avatax">
+            <label name="customer_usage_type"/>
+            <field name="customer_usgae_type"/>
             <group colspan="4" id="checkboxes">
                 <label name="auto_update_avatax"/>
                 <field name="auto_update_avatax"/>
