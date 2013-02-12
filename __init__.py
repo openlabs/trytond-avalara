@@ -9,13 +9,18 @@ from trytond.pool import Pool
 from .party import *
 from .company import *
 from .product import *
-from .avatax import *
+from .account import *
+from .sale import *
 
 
 def register():
     Pool.register(
+        CustomerUsageType,
         Party,
+        Address,
         Company,
         Product,
-        CustomerUsageType,
+        Tax,
+        Sale,
+        SaleLine,
         module='avatax_calc', type_='model')
