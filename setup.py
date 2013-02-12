@@ -76,7 +76,7 @@ setup(name='trytond_avatax_calc',
         ],
     package_data={
         'trytond.modules.avatax_calc': info.get('xml', []) \
-            + ['tryton.cfg', 'locale/*.po', 'icons/*.svg'],
+            + ['tryton.cfg', 'locale/*.po', 'icons/*.svg', 'view/*.xml'],
         },
     classifiers=[
         'Development Status :: 4 - Beta',

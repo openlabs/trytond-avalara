@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<data>
+    <xpath expr="/form/notebook/page[@id='avatax']/group[@id='checkboxes']" position="before">
+        <label name="license_key"/>
+        <field name="license_key"/>
+        <label name="url"/>
+        <field name="url"/>
+        <label name="company_code"/>
+        <field name="company_code"/>
+        <label name="request_timeout"/>
+        <field name="request_timeout"/>
+    </xpath>
+    <xpath expr="/form/notebook/page[@id='avatax']/group[@id='checkboxes']" position="inside">
+        <label name="disable_tax_calculation"/>
+        <field name="disable_tax_calculation"/>
+        <label name="disable_address_validation"/>
+        <field name="disable_address_validation"/>
+        <label name="enable_avatax_logging"/>
+        <field name="enable_avatax_logging"/>
+        <label name="uppercase_addresses"/>
+        <field name="uppercase_addresses"/>
+    </xpath>
+    <xpath expr="/form/group[@id='buttons']" position="inside">
+        <button string="Test Connection" name="test_connection"/>
+    </xpath>
+</data>
