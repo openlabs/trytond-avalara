@@ -5,7 +5,7 @@
         <field name="enable_avatax"/>
     </xpath>
     <xpath expr="/form/notebook" position="inside">
-        <page id="avatax" string="Avatax Configuration" 
+        <page id="avatax" string="Avatax Configuration"
                states="{'invisible': Not(Bool(Eval('enable_avatax')))}">
             <group id="connection" string="Connection Settings" colspan="3" col="2" yfill="1">
                 <label name="avatax_account_number"/>
