@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<data>
+    <xpath expr="/form/notebook/page[@id='accounting']" position="inside">
+        <separator string="Avatax Configuration" id="avatax-configuration" colspan="4"/>
+        <label name="customer_usage_type"/>
+        <field name="customer_usgae_type"/>
+        <button string="Validate Certificate" name="validate_certificate_avatax" colspan="2"/>
+        <label name="auto_update_avatax"/>
+        <field name="auto_update_avatax"/>
+        <button string="Initiate Workflow Request" name="initiate_workflow_request_avatax" colspan="2"/>
+    </xpath>
+</data>

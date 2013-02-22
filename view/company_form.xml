@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<data>
+    <xpath expr="/form/group[@id='checkboxes']" position="inside">
+        <label name="enable_avatax"/>
+        <field name="enable_avatax"/>
+    </xpath>
+    <xpath expr="/form/notebook" position="inside">
+        <page id="avatax" string="Avatax Configuration"
+               states="{'invisible': Not(Bool(Eval('enable_avatax')))}">
+            <group id="connection" string="Connection Settings" colspan="3" col="2" yfill="1">
+                <label name="avatax_account_number"/>
+                <field name="avatax_account_number"/>
+                <label name="avatax_license_key"/>
+                <field name="avatax_license_key"/>
+                <label name="avatax_url"/>
+                <field name="avatax_url"/>
+                <label name="avatax_company_code"/>
+                <field name="avatax_company_code"/>
+                <label name="avatax_request_timeout"/>
+                <field name="avatax_request_timeout"/>
+                <button string="Test Connection" name="test_avatax_connection" colspan="2"/>
+            </group>
+            <group id="features" string="Features" colspan="1" col="2" yfill="1">
+                <label name="avatax_disable_tax_calculation"/>
+                <field name="avatax_disable_tax_calculation"/>
+                <label name="avatax_disable_address_validation"/>
+                <field name="avatax_disable_address_validation"/>
+                <label name="avatax_enable_logging"/>
+                <field name="avatax_enable_logging"/>
+                <label name="avatax_uppercase_addresses"/>
+                <field name="avatax_uppercase_addresses"/>
+            </group>
+            <group id="tax-configuration" string="Tax Configuration" colspan="4" col="4" yfill="1">
+                <label name="default_tax_credit_note_account"/>
+                <field name="default_tax_credit_note_account"/>
+                <label name="default_tax_invoice_account"/>
+                <field name="default_tax_invoice_account"/>
+            </group>
+        </page>
+    </xpath>
+</data>
