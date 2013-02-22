@@ -12,10 +12,12 @@ from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.model import ModelView, Workflow
 
+__all__ = ['Sale', 'SaleLine']
 __metaclass__ = PoolMeta
 
 
 class Sale:
+    "Sale"
     __name__ = "sale.sale"
 
     def get_taxes_from_avatax(self):
@@ -25,10 +27,13 @@ class Sale:
         Company = Pool().get('company.company')
 
         if not self.sale_date:
-            self.raise_user
-        assert self.sale_date, "Date is required to compute tax"
-        assert self.warehouse, "Warehouse must be defined to compute tax"
-        assert self.warehouse.address, "Warehouse does not have address"
+            self.raise_user_error("Date is required to compute tax")
+
+        if not self.warehouse:
+            self.raise_user_error("Warehouse must be defined to compute tax")
+
+        if not self.warehouse.address:
+            self.raise_user_error("Warehouse does not have address")
 
         invoice_address = self.invoice_address._as_avatax_address()
         invoice_address['AddressCode'] = self.invoice_address.id
@@ -85,6 +90,7 @@ class Sale:
 
 
 class SaleLine:
+    "Sale order line"
     __name__ = "sale.line"
 
     def _as_avatax_line(self):

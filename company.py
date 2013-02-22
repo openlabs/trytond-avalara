@@ -16,7 +16,6 @@ import avatax
 from avatax.api import PRODUCTION_URL
 
 __all__ = ['Company']
-
 __metaclass__ = PoolMeta
 
 REQUIRED_FOR_AVATAX = {
@@ -90,8 +89,8 @@ class Company:
     @classmethod
     @ModelView.button
     def test_avatax_connection(cls, companies):
-        assert len(companies) == 1, \
-                "Test Connection needs to be done separately for each company"
+        if not len(companies) == 1:
+            cls.raise_user_error('test_many_companies')
         company, = companies
         api_client = company.avatax_api()
         api_client.test_connection()
@@ -112,7 +111,9 @@ class Company:
         cls.__rpc__.update({
             'test_avatax_connection': RPC(True, 0)
         })
-        _error_messages = {
+        cls._error_messages.update({
             'avatax_not_enabled': 'Avatax is not enabled for your '
-                                  'current company'
-        }
+                                  'current company',
+            'test_many_companies': 'Test Connection needs to be done'
+                                   ' separately for each company',
+        })

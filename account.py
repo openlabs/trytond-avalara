@@ -66,7 +66,12 @@ class Tax:
                     avatax_line['Region'],
                 )
             }
+
+            # XXX: This may not be the best approach to create these accounts.
+            # Find a better way as these two fields are required to create
+            # taxes.
             data['invoice_account'] = company.default_tax_invoice_account
-            data['credit_note_account'] = company.default_tax_credit_note_account
+            data['credit_note_account'] = \
+                    company.default_tax_credit_note_account
             tax = cls.create(data)
         return tax
