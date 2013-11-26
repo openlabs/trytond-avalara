@@ -69,7 +69,7 @@ class Sale:
         response = self.get_taxes_from_avatax()
         for line in response['TaxLines']:
             taxes = [
-                Tax.get_matching_tax(tax_line) \
+                Tax.get_matching_tax(tax_line)
                     for tax_line in line['TaxDetails']
                         if Decimal(tax_line['Tax'])
             ]

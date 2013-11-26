@@ -73,7 +73,6 @@ class Company:
         states=REQUIRED_FOR_AVATAX, depends=['company', 'type']
     )
 
-
     @staticmethod
     def default_avatax_request_timeout():
         return 300

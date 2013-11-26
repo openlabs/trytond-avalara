@@ -3,7 +3,7 @@
     <xpath expr="/form/notebook/page[@id='accounting']" position="inside">
         <separator string="Avatax Configuration" id="avatax-configuration" colspan="4"/>
         <label name="customer_usage_type"/>
-        <field name="customer_usgae_type"/>
+        <field name="customer_usage_type"/>
         <button string="Validate Certificate" name="validate_certificate_avatax" colspan="2"/>
         <label name="auto_update_avatax"/>
         <field name="auto_update_avatax"/>
