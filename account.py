@@ -73,5 +73,5 @@ class Tax:
             data['invoice_account'] = company.default_tax_invoice_account
             data['credit_note_account'] = \
                     company.default_tax_credit_note_account
-            tax = cls.create(data)
+            tax, = cls.create([data])
         return tax
