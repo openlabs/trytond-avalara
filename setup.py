@@ -102,22 +102,22 @@ for dep in info.get('depends', []):
 requires.append('trytond >= %s.%s, < %s.%s' %
         (major_version, minor_version, major_version, minor_version + 1))
 
-setup(name='trytond_avatax_calc',
+setup(
+    name='trytond_avatax_calc',
     version=info.get('version', '0.0.1'),
     description='Tryton module for tax rate calculation',
     long_description=read('README.rst'),
-    author='Tryton',
-    url='http://www.tryton.org/',
-    download_url="http://downloads.tryton.org/" + \
-        info.get('version', '0.0.1').rsplit('.', 1)[0] + '/',
+    author='Openlabs Technologies and Consulting (P) Ltd',
+    url='http://www.openlabs.co.in/',
     package_dir={'trytond.modules.avatax_calc': '.'},
     packages=[
         'trytond.modules.avatax_calc',
         'trytond.modules.avatax_calc.tests',
     ],
     package_data={
-        'trytond.modules.avatax_calc': info.get('xml', []) \
-            + ['tryton.cfg', 'locale/*.po', 'icons/*.svg', 'view/*.xml'],
+        'trytond.modules.avatax_calc':
+            info.get('xml', []) +
+                ['tryton.cfg', 'locale/*.po', 'icons/*.svg', 'view/*.xml'],
     },
     classifiers=[
         'Development Status :: 4 - Beta',
