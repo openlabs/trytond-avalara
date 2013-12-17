@@ -12,6 +12,7 @@ __all__ = ['Product']
 
 __metaclass__ = PoolMeta
 
+
 class Product:
     "Product"
     __name__ = 'product.product'
