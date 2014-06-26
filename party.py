@@ -9,6 +9,7 @@ from trytond.model import fields, ModelView, ModelSQL
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.rpc import RPC
+from .company import wrap_avatax_error
 
 __all__ = ['Party', 'CustomerUsageType', 'Address']
 
@@ -61,6 +62,7 @@ class Address:
             PostalCode=self.zip
         )
 
+    @wrap_avatax_error
     def _validate_address_avatax(self):
         """
         Validate the current address with Avatax and save the

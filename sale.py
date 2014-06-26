@@ -12,6 +12,8 @@ from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.model import ModelView, Workflow
 
+from .company import wrap_avatax_error
+
 __all__ = ['Sale', 'SaleLine']
 __metaclass__ = PoolMeta
 
@@ -20,6 +22,7 @@ class Sale:
     "Sale"
     __name__ = "sale.sale"
 
+    @wrap_avatax_error
     def get_taxes_from_avatax(self):
         """
         Get the taxes from Avatax
