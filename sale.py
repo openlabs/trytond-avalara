@@ -73,8 +73,7 @@ class Sale:
         for line in response['TaxLines']:
             taxes = [
                 Tax.get_matching_tax(tax_line)
-                    for tax_line in line['TaxDetails']
-                        if Decimal(tax_line['Tax'])
+                for tax_line in line['TaxDetails'] if Decimal(tax_line['Tax'])
             ]
             Line.write(
                 [Line(int(line['LineNo']))], {'taxes': [('set', taxes)]}
