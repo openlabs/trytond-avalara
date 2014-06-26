@@ -52,12 +52,12 @@ class Tax:
                 ('juris_name', '=', avatax_line['JurisName']),
                 ('juris_type', '=', avatax_line['JurisType']),
                 ('name', '=', avatax_line['TaxName']),
-                ('rate', '=', Decimal(avatax_line['Rate']) * 100)
+                ('rate', '=', Decimal(avatax_line['Rate']))
             ])
         except ValueError:
             data = {
                 'name': avatax_line['TaxName'],
-                'rate': Decimal(avatax_line['Rate']) * 100,
+                'rate': Decimal(avatax_line['Rate']),
                 'juris_name': avatax_line['JurisName'],
                 'juris_type': avatax_line['JurisType'],
                 'description': '%s (%s/%s)' % (
