@@ -7,10 +7,11 @@
     :license: BSD, see LICENSE for more details.
 """
 from decimal import Decimal
+from datetime import datetime
 
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
-from trytond.model import ModelView, Workflow
+from trytond.model import ModelView, Workflow, fields
 
 from .company import wrap_avatax_error
 
@@ -21,6 +22,8 @@ __metaclass__ = PoolMeta
 class Sale:
     "Sale"
     __name__ = "sale.sale"
+
+    tax_update_date = fields.DateTime('Tax Details Update Time', readonly=True)
 
     @wrap_avatax_error
     def get_taxes_from_avatax(self):
@@ -69,6 +72,8 @@ class Sale:
         Line = Pool().get('sale.line')
         Tax = Pool().get('account.tax')
 
+        tax_update_date = datetime.utcnow()
+
         response = self.get_taxes_from_avatax()
         for line in response['TaxLines']:
             taxes = [
@@ -80,6 +85,7 @@ class Sale:
             )
 
         assert Decimal(response['TotalTax']) == self.tax_amount
+        self.write([self], {'tax_update_date': tax_update_date})
 
     @classmethod
     @ModelView.button
