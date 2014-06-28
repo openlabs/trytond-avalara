@@ -9,7 +9,7 @@ from trytond.pool import Pool
 from party import CustomerUsageType, Party, Address
 from company import Company
 from product import Product
-from account import Tax
+from account import Tax, TaxCode
 from sale import Sale, SaleLine
 
 
@@ -21,6 +21,7 @@ def register():
         Company,
         Product,
         Tax,
+        TaxCode,
         Sale,
         SaleLine,
         module='avatax_calc', type_='model'

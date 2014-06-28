@@ -73,7 +73,7 @@ class Company:
     )
 
     default_tax_credit_note_account = fields.Many2One(
-        'account.account', 'Default Tax Credit Account',
+        'account.account', 'Default Credit Note Tax Account',
         domain=[
             ('company', '=', Eval('id')),
             ('kind', 'not in', ['view', 'receivable', 'payable']),
@@ -81,7 +81,7 @@ class Company:
         states=REQUIRED_FOR_AVATAX, depends=['id']
     )
     default_tax_invoice_account = fields.Many2One(
-        'account.account', 'Default Invoice Account',
+        'account.account', 'Default Invoice Tax Account',
         domain=[
             ('company', '=', Eval('id')),
             ('kind', 'not in', ['view', 'receivable', 'payable']),
