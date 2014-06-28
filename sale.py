@@ -41,12 +41,20 @@ class Sale:
         if not self.warehouse.address:
             self.raise_user_error("Warehouse does not have address")
 
-        invoice_address = self.invoice_address._as_avatax_address()
-        invoice_address['AddressCode'] = self.invoice_address.id
+        addresses = []
+
+        if self.invoice_address:
+            invoice_address = self.invoice_address._as_avatax_address()
+            invoice_address['AddressCode'] = self.invoice_address.id
+            addresses.append(invoice_address)
+
         shipment_address = self.shipment_address._as_avatax_address()
         shipment_address['AddressCode'] = self.shipment_address.id
+        addresses.append(shipment_address)
+
         warehouse_address = self.warehouse.address._as_avatax_address()
         warehouse_address['AddressCode'] = self.warehouse.address.id
+        addresses.append(warehouse_address)
 
         data = {
             u'DocDate': self.sale_date.strftime("%Y-%m-%d"),
@@ -56,9 +64,7 @@ class Sale:
                     line._as_avatax_line() for line in self.lines
                 ]
             ),
-            u'Addresses': [
-                invoice_address, shipment_address, warehouse_address
-            ]
+            u'Addresses': addresses,
         }
 
         company = Company(Transaction().context['company'])
@@ -87,13 +93,32 @@ class Sale:
         assert Decimal(response['TotalTax']) == self.tax_amount
         self.write([self], {'tax_update_date': tax_update_date})
 
+    def requires_tax_refresh(self):
+        """
+        Returns True if the taxes require refresh
+        """
+        SaleLine = Pool().get('sale.line')
+
+        if self.tax_update_date is None:
+            return True
+
+        if self.write_date > self.tax_update_date:
+            return True
+
+        return bool(SaleLine.search([
+                'OR',
+                ('write_date', '>', self.tax_update_date),
+                ('create_date', '>', self.tax_update_date),
+        ]))
+
     @classmethod
     @ModelView.button
     @Workflow.transition('quotation')
     def quote(cls, sales):
         for sale in sales:
             sale.check_for_quotation()
-            sale.update_taxes_from_avatax()
+            if sale.requires_tax_refresh():
+                sale.update_taxes_from_avatax()
         cls.set_reference(sales)
 
 
