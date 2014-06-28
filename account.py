@@ -49,46 +49,50 @@ class Tax:
 
         company = Company(Transaction().context['company'])
 
-        tax_base_code = TaxCode.get_or_create_from(avatax_line, is_base=True)
-        tax_code = TaxCode.get_or_create_from(avatax_line, is_base=False)
+        with Transaction().set_user(0):
+            tax_base_code = TaxCode.get_or_create_from(
+                avatax_line, is_base=True)
+            tax_code = TaxCode.get_or_create_from(
+                avatax_line, is_base=False)
 
-        try:
-            tax, = cls.search([
-                ('invoice_base_code', '=', tax_base_code),
-                ('invoice_tax_code', '=', tax_code),
-                ('avatax_name', '=', avatax_line['TaxName']),
-                ('rate', '=', Decimal(avatax_line['Rate']))
-            ])
-        except ValueError:
-            tax, = cls.create([{
-                'name': avatax_line['TaxName'],
-                'avatax_name': avatax_line['TaxName'],
-                'description': '%s (%s/%s)' % (
-                    avatax_line['TaxName'],
-                    avatax_line['Country'],
-                    avatax_line['Region'],
-                ),
+            try:
+                tax, = cls.search([
+                    ('invoice_base_code', '=', tax_base_code),
+                    ('invoice_tax_code', '=', tax_code),
+                    ('avatax_name', '=', avatax_line['TaxName']),
+                    ('rate', '=', Decimal(avatax_line['Rate']))
+                ])
+            except ValueError:
+                tax, = cls.create([{
+                    'name': avatax_line['TaxName'],
+                    'avatax_name': avatax_line['TaxName'],
+                    'description': '%s (%s/%s)' % (
+                        avatax_line['TaxName'],
+                        avatax_line['Country'],
+                        avatax_line['Region'],
+                    ),
 
-                # Rate
-                'rate': Decimal(avatax_line['Rate']),
+                    # Rate
+                    'rate': Decimal(avatax_line['Rate']),
 
-                # Tax codes
-                'invoice_tax_code': tax_code,
-                'credit_note_tax_code': tax_code,
-                'invoice_base_code': tax_base_code,
-                'credit_note_base_code': tax_base_code,
+                    # Tax codes
+                    'invoice_tax_code': tax_code,
+                    'credit_note_tax_code': tax_code,
+                    'invoice_base_code': tax_base_code,
+                    'credit_note_base_code': tax_base_code,
 
-                # Tax code signs.
-                # Credit notes mean reversal
-                'invoice_tax_sign': 1,
-                'invoice_base_sign': 1,
-                'credit_note_tax_sign': -1,
-                'credit_note_base_sign': -1,
+                    # Tax code signs.
+                    # Credit notes mean reversal
+                    'invoice_tax_sign': 1,
+                    'invoice_base_sign': 1,
+                    'credit_note_tax_sign': -1,
+                    'credit_note_base_sign': -1,
 
-                # Tax accounts. The GL to which tax has to be accounted.
-                'invoice_account': company.default_tax_invoice_account,
-                'credit_note_account': company.default_tax_credit_note_account,
-            }])
+                    # Tax accounts. The GL to which tax has to be accounted.
+                    'invoice_account': company.default_tax_invoice_account,
+                    'credit_note_account': (
+                        company.default_tax_credit_note_account),
+                }])
         return tax
 
 
