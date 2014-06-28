@@ -161,7 +161,7 @@ class TaxCode:
         Subdivision = Pool().get('country.subdivision')
 
         subdivision_code = '-'.join([
-            avatax_detail['Country'],  avatax_detail['Region']
+            avatax_detail['Country'], avatax_detail['Region']
         ])
         try:
             tax_code, = cls.search([
