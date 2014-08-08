@@ -7,10 +7,13 @@
     :copyright: © 2013 by Openlabs Technologies & Consulting (P) Limited
     :license: BSD, see LICENSE for more details.
 """
+from functools import wraps
+
 from trytond.model import fields, ModelView
 from trytond.pool import PoolMeta
 from trytond.pyson import Eval, Bool
 from trytond.rpc import RPC
+from trytond.exceptions import UserError
 
 import avatax
 from avatax.api import PRODUCTION_URL
@@ -21,6 +24,19 @@ __metaclass__ = PoolMeta
 REQUIRED_FOR_AVATAX = {
     'required': Bool(Eval('enable_avatax'))
 }
+
+
+def wrap_avatax_error(function):
+    """
+    Raise avatax api errors as user errors
+    """
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        try:
+            return function(*args, **kwargs)
+        except avatax.AvataxError, exc:
+            raise UserError(*exc.args)
+    return wrapper
 
 
 class Company:
@@ -57,7 +73,7 @@ class Company:
     )
 
     default_tax_credit_note_account = fields.Many2One(
-        'account.account', 'Default Tax Credit Account',
+        'account.account', 'Default Credit Note Tax Account',
         domain=[
             ('company', '=', Eval('id')),
             ('kind', 'not in', ['view', 'receivable', 'payable']),
@@ -65,7 +81,7 @@ class Company:
         states=REQUIRED_FOR_AVATAX, depends=['id']
     )
     default_tax_invoice_account = fields.Many2One(
-        'account.account', 'Default Invoice Account',
+        'account.account', 'Default Invoice Tax Account',
         domain=[
             ('company', '=', Eval('id')),
             ('kind', 'not in', ['view', 'receivable', 'payable']),
@@ -86,6 +102,7 @@ class Company:
         return False
 
     @classmethod
+    @wrap_avatax_error
     @ModelView.button
     def test_avatax_connection(cls, companies):
         if not len(companies) == 1:

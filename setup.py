@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-#This file is part of Tryton.  The COPYRIGHT file at the top level of
-#this repository contains the full copyright notices and license terms.
+# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
 
 from setuptools import setup, Command
 import re
@@ -116,8 +116,9 @@ setup(
     ],
     package_data={
         'trytond.modules.avatax_calc':
-            info.get('xml', []) +
-                ['tryton.cfg', 'locale/*.po', 'icons/*.svg', 'view/*.xml'],
+            info.get('xml', []) + [
+                'tryton.cfg', 'locale/*.po', 'icons/*.svg', 'view/*.xml'
+            ],
     },
     classifiers=[
         'Development Status :: 4 - Beta',
