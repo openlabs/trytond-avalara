@@ -3,7 +3,7 @@
     sale
 
 
-    :copyright: © 2013 by Openlabs Technologies & Consulting (P) Limited
+    :copyright: © 2013-2014 by Openlabs Technologies & Consulting (P) Limited
     :license: BSD, see LICENSE for more details.
 """
 from decimal import Decimal
@@ -87,7 +87,7 @@ class Sale:
                 for tax_line in line['TaxDetails'] if Decimal(tax_line['Tax'])
             ]
             Line.write(
-                [Line(int(line['LineNo']))], {'taxes': [('set', taxes)]}
+                [Line(int(line['LineNo']))], {'taxes': [('add', taxes)]}
             )
 
         assert Decimal(response['TotalTax']) == self.tax_amount
