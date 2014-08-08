@@ -2,7 +2,7 @@
 """
     account
 
-    :copyright: © 2013 by Openlabs Technologies & Consulting (P) Limited
+    :copyright: © 2013-2014 by Openlabs Technologies & Consulting (P) Limited
     :license: BSD, see LICENSE for more details.
 """
 from decimal import Decimal
@@ -105,8 +105,10 @@ class TaxCode:
     """
     __name__ = 'account.tax.code'
 
-    country = fields.Many2One('country.country', 'Country',
-        on_change=['country', 'subdivision'], states=STATES, depends=DEPENDS)
+    country = fields.Many2One(
+        'country.country', 'Country',
+        states=STATES, depends=DEPENDS
+    )
     subdivision = fields.Many2One("country.subdivision",
             'Subdivision', domain=[('country', '=', Eval('country'))],
             states=STATES, depends=['active', 'country'])
@@ -124,6 +126,7 @@ class TaxCode:
         help="A tax code for a region (like state, province)"
     )
 
+    @fields.depends('country', 'subdivision')
     def on_change_country(self):
         if (self.subdivision
                 and self.subdivision.country != self.country):
