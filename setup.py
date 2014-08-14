@@ -59,7 +59,7 @@ class XMLTests(Command):
     def run(self):
         import coverage
         import xmlrunner
-        cov = coverage.coverage(source=["trytond.modules.avatax_calc"])
+        cov = coverage.coverage(source=["trytond.modules.avalara"])
         cov.start()
         from tests import suite
         xmlrunner.XMLTestRunner(output="xml-test-results").run(suite())
@@ -122,7 +122,9 @@ major_version, minor_version, _ = info.get('version', '0.0.1').split('.', 2)
 major_version = int(major_version)
 minor_version = int(minor_version)
 
-requires = []
+requires = [
+    'avatax',
+]
 for dep in info.get('depends', []):
     if not re.match(r'(ir|res|webdav)(\W|$)', dep):
         requires.append('trytond_%s >= %s.%s, < %s.%s' %
@@ -132,19 +134,19 @@ requires.append('trytond >= %s.%s, < %s.%s' %
         (major_version, minor_version, major_version, minor_version + 1))
 
 setup(
-    name='trytond_avatax_calc',
+    name='trytond_avalara',
     version=info.get('version', '0.0.1'),
     description='Tryton module for tax rate calculation',
     long_description=read('README.rst'),
     author='Openlabs Technologies and Consulting (P) Ltd',
     url='http://www.openlabs.co.in/',
-    package_dir={'trytond.modules.avatax_calc': '.'},
+    package_dir={'trytond.modules.avalara': '.'},
     packages=[
-        'trytond.modules.avatax_calc',
-        'trytond.modules.avatax_calc.tests',
+        'trytond.modules.avalara',
+        'trytond.modules.avalara.tests',
     ],
     package_data={
-        'trytond.modules.avatax_calc':
+        'trytond.modules.avalara':
             info.get('xml', []) + [
                 'tryton.cfg', 'locale/*.po', 'icons/*.svg', 'view/*.xml'
             ],
@@ -169,7 +171,7 @@ setup(
     zip_safe=False,
     entry_points="""
     [trytond.modules]
-    avatax_calc = trytond.modules.avatax_calc
+    avalara = trytond.modules.avalara
     """,
     test_suite='tests',
     test_loader='trytond.test_loader:Loader',
