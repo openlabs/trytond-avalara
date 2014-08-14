@@ -25,13 +25,13 @@ class TestViewDependsCase(unittest.TestCase):
     Test the view and depends
     '''
     def setUp(self):
-        trytond.tests.test_tryton.install_module('avatax_calc')
+        trytond.tests.test_tryton.install_module('avalara')
 
     def test0005views(self):
         '''
         Test views.
         '''
-        test_view('avatax_calc')
+        test_view('avalara')
 
     def test0006depends(self):
         '''

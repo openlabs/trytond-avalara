@@ -24,5 +24,5 @@ def register():
         TaxCode,
         Sale,
         SaleLine,
-        module='avatax_calc', type_='model'
+        module='avalara', type_='model'
     )
