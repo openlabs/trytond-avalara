@@ -28,6 +28,7 @@ class Party:
     "Party"
     __name__ = 'party.party'
 
+    tax_exemption_number = fields.Char("Tax Exemption Number")
     auto_update_avatax = fields.Boolean('Auto Update Avatax')
     customer_usage_type = fields.Many2One(
         'avatax.customer_usage_type', 'Customer Usage Type'
