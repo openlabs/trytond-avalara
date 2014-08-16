@@ -115,11 +115,11 @@ class Sale:
     @ModelView.button
     @Workflow.transition('quotation')
     def quote(cls, sales):
+        super(Sale, cls).quote(sales)
+
         for sale in sales:
-            sale.check_for_quotation()
-            if sale.requires_tax_refresh():
+            if sale.company.enable_avatax and sale.requires_tax_refresh():
                 sale.update_taxes_from_avatax()
-        cls.set_reference(sales)
 
 
 class SaleLine:
