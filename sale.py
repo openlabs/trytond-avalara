@@ -10,7 +10,6 @@ from decimal import Decimal
 from datetime import datetime
 
 from trytond.pool import PoolMeta, Pool
-from trytond.transaction import Transaction
 from trytond.model import ModelView, Workflow, fields
 
 from .company import wrap_avatax_error
@@ -25,22 +24,14 @@ class Sale:
 
     tax_update_date = fields.DateTime('Tax Details Update Time', readonly=True)
 
-    @wrap_avatax_error
-    def get_taxes_from_avatax(self):
+    def _get_avatax_data(self):
         """
-        Get the taxes from Avatax
+        Returns the data dictionary that is used by the `get_taxes_from_avatax`
+        method.
+
+        This is separated to make it easier for downstream module to modify
+        the values easily.
         """
-        Company = Pool().get('company.company')
-
-        if not self.sale_date:
-            self.raise_user_error("Date is required to compute tax")
-
-        if not self.warehouse:
-            self.raise_user_error("Warehouse must be defined to compute tax")
-
-        if not self.warehouse.address:
-            self.raise_user_error("Warehouse does not have address")
-
         addresses = []
 
         if self.invoice_address:
@@ -56,9 +47,10 @@ class Sale:
         warehouse_address['AddressCode'] = self.warehouse.address.id
         addresses.append(warehouse_address)
 
-        data = {
+        return {
             u'DocDate': self.sale_date.strftime("%Y-%m-%d"),
             u'CustomerCode': self.party.code,
+            u'CurrencyCode': self.currency.code,
             u'Lines': filter(
                 None, [
                     line._as_avatax_line() for line in self.lines
@@ -67,9 +59,38 @@ class Sale:
             u'Addresses': addresses,
         }
 
-        company = Company(Transaction().context['company'])
-        client_api = company.avatax_api()
+    @wrap_avatax_error
+    def get_taxes_from_avatax(self):
+        """
+        Get the taxes from Avatax
+        """
+        if not self.sale_date:
+            self.raise_user_error("Date is required to compute tax")
+
+        if not self.warehouse:
+            self.raise_user_error("Warehouse must be defined to compute tax")
+
+        if not self.warehouse.address:
+            self.raise_user_error("Warehouse does not have address")
+
+        data = self._get_avatax_data()
+
+        client_api = self.company.avatax_api()
         return client_api.tax_get_detailed(**data)
+
+    def build_error_message_from_avalara(self, messages):
+        """
+        Build the error message from Avalra
+        """
+        # Default message
+        message_string = 'Tax computation with Avalara failed'
+
+        for message in messages:
+            message_string += "%s\n\n%s" % (message['Name'], message['Summary'])
+            if message.get('Details'):
+                message_string += "\n\nDetails: %s" % message['Details']
+
+        return message_string
 
     def update_taxes_from_avatax(self):
         """
@@ -81,7 +102,18 @@ class Sale:
         tax_update_date = datetime.utcnow()
 
         response = self.get_taxes_from_avatax()
+
+        if response['ResultCode'] != 'Success':
+            # Getting tax information failed. Show a message
+            self.raise_user_error(
+                self.build_error_message_from_avalara(
+                    response.get('Messages', [])
+                )
+            )
+
         for line in response['TaxLines']:
+            if 'TaxDetails' not in line:
+                continue
             taxes = [
                 Tax.get_matching_tax(tax_line)
                 for tax_line in line['TaxDetails'] if Decimal(tax_line['Tax'])
