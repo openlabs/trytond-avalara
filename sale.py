@@ -98,6 +98,7 @@ class Sale:
         """
         Line = Pool().get('sale.line')
         Tax = Pool().get('account.tax')
+        Sale = Pool().get('sale.sale')
 
         tax_update_date = datetime.utcnow()
 
@@ -122,7 +123,9 @@ class Sale:
                 [Line(int(line['LineNo']))], {'taxes': [('add', taxes)]}
             )
 
-        assert Decimal(response['TotalTax']) == self.tax_amount
+        total_tax_avalara = Decimal(response['TotalTax'])
+        tax_sale = Sale(self.id).tax_amount
+        assert total_tax_avalara == tax_sale, "Tax computation mismatch"
         self.write([self], {'tax_update_date': tax_update_date})
 
     def requires_tax_refresh(self):
