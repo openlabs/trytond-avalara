@@ -96,11 +96,6 @@ class Address:
             'zip': validated_address.get('PostalCode'),
         }
 
-        if 'County' in validated_address:
-            values['city'] = ', '.join(
-                [values['city'], validated_address['County']]
-            )
-
         if 'Country' in validated_address:
             values['country'], = Country.search([
                 ('code', '=', validated_address['Country'])
