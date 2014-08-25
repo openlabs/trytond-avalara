@@ -125,7 +125,12 @@ class Sale:
 
         total_tax_avalara = Decimal(response['TotalTax'])
         tax_sale = Sale(self.id).tax_amount
-        assert total_tax_avalara == tax_sale, "Tax computation mismatch"
+        if abs(total_tax_avalara - tax_sale) > Decimal('0.01'):
+            self.raise_user_error(
+                'Mismatch in tax computations.\n'
+                'Tryton Total: %s\n'
+                'Avalara Total: %s' % (tax_sale, total_tax_avalara)
+            )
         self.write([self], {'tax_update_date': tax_update_date})
 
     def requires_tax_refresh(self):
