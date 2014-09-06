@@ -123,14 +123,16 @@ class Sale:
                 [Line(int(line['LineNo']))], {'taxes': [('add', taxes)]}
             )
 
-        total_tax_avalara = Decimal(response['TotalTax'])
-        tax_sale = Sale(self.id).tax_amount
-        if abs(total_tax_avalara - tax_sale) > Decimal('0.01'):
-            self.raise_user_error(
-                'Mismatch in tax computations.\n'
-                'Tryton Total: %s\n'
-                'Avalara Total: %s' % (tax_sale, total_tax_avalara)
-            )
+        # Temporarily disable the total check as returns screw this up
+        #
+        # total_tax_avalara = Decimal(response['TotalTax'])
+        # tax_sale = Sale(self.id).tax_amount
+        # if abs(total_tax_avalara - tax_sale) > Decimal('0.01'):
+        #    self.raise_user_error(
+        #        'Mismatch in tax computations.\n'
+        #        'Tryton Total: %s\n'
+        #        'Avalara Total: %s' % (tax_sale, total_tax_avalara)
+        #    )
         self.write([self], {'tax_update_date': tax_update_date})
 
     def requires_tax_refresh(self):
@@ -180,6 +182,6 @@ class SaleLine:
             ItemCode=self.product.code,
             TaxCode=self.product.avatax_tax_code,
             Description=self.description,
-            Qty=str(self.quantity),
-            Amount=str(self.amount),
+            Qty=str(abs(self.quantity)),
+            Amount=str(abs(self.amount)),
         )
