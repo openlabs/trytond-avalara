@@ -28,6 +28,7 @@ class Party:
     "Party"
     __name__ = 'party.party'
 
+    tax_exemption_number = fields.Char("Tax Exemption Number")
     auto_update_avatax = fields.Boolean('Auto Update Avatax')
     customer_usage_type = fields.Many2One(
         'avatax.customer_usage_type', 'Customer Usage Type'
@@ -94,11 +95,6 @@ class Address:
             'city': validated_address.get('City'),
             'zip': validated_address.get('PostalCode'),
         }
-
-        if 'County' in validated_address:
-            values['city'] = ', '.join(
-                [values['city'], validated_address['County']]
-            )
 
         if 'Country' in validated_address:
             values['country'], = Country.search([
